@@ -1,6 +1,5 @@
-# OpenClaw Control Tower - Friend Testing
-<img width="1903" height="821" alt="image" src="https://github.com/user-attachments/assets/249d0129-a4a9-4559-af5c-a6818f1c4ff6" />
-
+# OpenClaw Control Tower - Zak Testing
+![Capture1](https://github.com/user-attachments/assets/98b14cf6-8676-48de-8996-ed54f9e90036)
 🚀 Simple one-command installation for OpenClaw Control Tower
 
 ## Quick Install
@@ -40,12 +39,13 @@ Just reply with:
 
 ## Poprtal Tabs
 -Agents:
-![Capture1](https://github.com/user-attachments/assets/98b14cf6-8676-48de-8996-ed54f9e90036)
-- API Credits:
 ![Capture2](https://github.com/user-attachments/assets/cc77385c-a2c4-4f73-82d6-037f848899f2)
-- Metrics
+
+- API Credits:
 ![Capture3](https://github.com/user-attachments/assets/78fbccdc-8222-4583-835c-a410c1be5a20)
 
+- Metrics
+<img width="1903" height="821" alt="image" src="https://github.com/user-attachments/assets/249d0129-a4a9-4559-af5c-a6818f1c4ff6" />
 
 ---
 
