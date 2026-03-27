@@ -1,0 +1,37 @@
+{
+  "name": "federation-control-tower",
+  "version": "1.0.0",
+  "description": "Federation Control Tower MVP - Real-time monitoring dashboard for OpenClaw Federation",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev -p 18804",
+    "build": "next build",
+    "start": "next start -p 18805",
+    "lint": "next lint"
+  },
+  "keywords": [
+    "federation",
+    "openclaw",
+    "monitoring",
+    "dashboard"
+  ],
+  "author": "Federation Team",
+  "license": "ISC",
+  "dependencies": {
+    "next": "^16.2.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "recharts": "^2.12.0",
+    "swr": "^2.2.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "playwright-core": "^1.58.2",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.9.3"
+  }
+}

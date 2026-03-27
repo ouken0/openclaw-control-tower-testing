@@ -1,0 +1,220 @@
+// API Credits Types
+export interface ApiCreditInfo {
+  provider: string;
+  displayName: string;
+  icon: string;
+  totalCredits: number;      // in currency units (USD)
+  usedCredits: number;       // in currency units (USD)
+  remainingCredits: number;  // in currency units (USD)
+  percentUsed: number;       // 0-100
+  resetDate: string;         // ISO date string
+  daysUntilReset: number;
+  rateLimitPerMinute: number;
+  currentRateUsage: number;
+  status: 'healthy' | 'warning' | 'critical' | 'exhausted';
+  lastUpdated: string;
+  // Per-agent breakdown
+  agentUsage: {
+    agentName: string;
+    tokensUsed: number;
+    tokenLimit: number;
+    costUSD: number;
+    requests: number;
+    requestLimit: number;
+  }[];
+}
+
+export interface ApiCreditsData {
+  providers: ApiCreditInfo[];
+  totalMonthlyBudget: number;
+  totalUsed: number;
+  totalRemaining: number;
+  overallHealth: 'healthy' | 'warning' | 'critical';
+  lastFullRefresh: string;
+}
+
+// Provider credit configurations
+// These should be updated from actual API calls in production
+export const PROVIDER_CREDITS: Record<string, {
+  displayName: string;
+  icon: string;
+  monthlyAllowance: number;  // USD
+  resetDay: number;          // day of month
+}> = {
+  'huggingface': {
+    displayName: 'HuggingFace',
+    icon: '🤗',
+    monthlyAllowance: 0, // Free tier
+    resetDay: 1,
+  },
+  'gemini': {
+    displayName: 'Google Gemini',
+    icon: '✨',
+    monthlyAllowance: 0, // Free tier with limits
+    resetDay: 1,
+  },
+  'groq': {
+    displayName: 'Groq Cloud',
+    icon: '⚡',
+    monthlyAllowance: 0, // Free tier
+    resetDay: 1,
+  },
+  'ollama': {
+    displayName: 'Ollama Cloud',
+    icon: '🦙',
+    monthlyAllowance: 0, // Free tier
+    resetDay: 1,
+  },
+  'zhipu': {
+    displayName: 'Zhipu AI',
+    icon: '🦞',
+    monthlyAllowance: 0, // Free tier
+    resetDay: 1,
+  },
+  'openai': {
+    displayName: 'OpenAI',
+    icon: '🔵',
+    monthlyAllowance: 0,
+    resetDay: 1,
+  },
+  'github': {
+    displayName: 'GitHub Models',
+    icon: '🐙',
+    monthlyAllowance: 0, // Free for limited usage
+    resetDay: 1,
+  },
+};
+
+// Calculate days until next reset
+export function getDaysUntilReset(resetDay: number): number {
+  const now = new Date();
+  const currentDay = now.getDate();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+  
+  let nextReset: Date;
+  if (currentDay >= resetDay) {
+    // Next reset is next month
+    nextReset = new Date(currentYear, currentMonth + 1, resetDay);
+  } else {
+    // Reset is this month
+    nextReset = new Date(currentYear, currentMonth, resetDay);
+  }
+  
+  const diffTime = nextReset.getTime() - now.getTime();
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+// Get provider status based on usage percentage
+export function getProviderStatus(percentUsed: number): ApiCreditInfo['status'] {
+  if (percentUsed >= 100) return 'exhausted';
+  if (percentUsed >= 90) return 'critical';
+  if (percentUsed >= 75) return 'warning';
+  return 'healthy';
+}
+
+// Get status color
+export function getStatusColor(status: ApiCreditInfo['status']): string {
+  switch (status) {
+    case 'healthy': return '#22c55e';
+    case 'warning': return '#eab308';
+    case 'critical': return '#f97316';
+    case 'exhausted': return '#ef4444';
+  }
+}
+
+// Generate realistic mock credit data for development
+export function generateMockCredits(): ApiCreditsData {
+  const now = new Date();
+  const providers: ApiCreditInfo[] = [
+    {
+      provider: 'huggingface',
+      displayName: 'HuggingFace',
+      icon: '🤗',
+      totalCredits: 0,
+      usedCredits: 0,
+      remainingCredits: 0,
+      percentUsed: 0,
+      resetDate: new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString(),
+      daysUntilReset: getDaysUntilReset(1),
+      rateLimitPerMinute: 30,
+      currentRateUsage: 5,
+      status: 'healthy',
+      lastUpdated: now.toISOString(),
+      agentUsage: [
+        { agentName: 'Qasid (Image Gen)', tokensUsed: 125000, costUSD: 0, requests: 45 },
+        { agentName: 'Mūsā (Design)', tokensUsed: 89000, costUSD: 0, requests: 23 },
+      ],
+    },
+    {
+      provider: 'gemini',
+      displayName: 'Google Gemini',
+      icon: '✨',
+      totalCredits: 0,
+      usedCredits: 0,
+      remainingCredits: 0,
+      percentUsed: 0,
+      resetDate: new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString(),
+      daysUntilReset: getDaysUntilReset(1),
+      rateLimitPerMinute: 60,
+      currentRateUsage: 12,
+      status: 'healthy',
+      lastUpdated: now.toISOString(),
+      agentUsage: [
+        { agentName: 'Mun\'im (Orchestration)', tokensUsed: 456000, costUSD: 0, requests: 89 },
+        { agentName: 'Design Team', tokensUsed: 234000, costUSD: 0, requests: 56 },
+      ],
+    },
+    {
+      provider: 'groq',
+      displayName: 'Groq Cloud',
+      icon: '⚡',
+      totalCredits: 0,
+      usedCredits: 0,
+      remainingCredits: 0,
+      percentUsed: 0,
+      resetDate: new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString(),
+      daysUntilReset: getDaysUntilReset(1),
+      rateLimitPerMinute: 30,
+      currentRateUsage: 8,
+      status: 'healthy',
+      lastUpdated: now.toISOString(),
+      agentUsage: [
+        { agentName: 'Muhandis (Std)', tokensUsed: 234000, costUSD: 0.12, requests: 67 },
+        { agentName: 'Research Tasks', tokensUsed: 156000, costUSD: 0.08, requests: 34 },
+      ],
+    },
+    {
+      provider: 'ollama',
+      displayName: 'Ollama Cloud',
+      icon: '🦙',
+      totalCredits: 0,
+      usedCredits: 0,
+      remainingCredits: 0,
+      percentUsed: 0,
+      resetDate: new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString(),
+      daysUntilReset: getDaysUntilReset(1),
+      rateLimitPerMinute: 100,
+      currentRateUsage: 25,
+      status: 'healthy',
+      lastUpdated: now.toISOString(),
+      agentUsage: [
+        { agentName: 'Kātib (Content)', tokensUsed: 345000, costUSD: 0, requests: 78 },
+        { agentName: 'Bāḥith (Research)', tokensUsed: 289000, costUSD: 0, requests: 65 },
+        { agentName: 'Khatib (Info)', tokensUsed: 178000, costUSD: 0, requests: 112 },
+      ],
+    },
+  ];
+
+  const totalUsed = providers.reduce((acc, p) => acc + p.usedCredits, 0);
+  const totalRemaining = providers.reduce((acc, p) => acc + p.remainingCredits, 0);
+
+  return {
+    providers,
+    totalMonthlyBudget: 0,
+    totalUsed,
+    totalRemaining,
+    overallHealth: 'healthy',
+    lastFullRefresh: now.toISOString(),
+  };
+}
